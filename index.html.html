@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <title>For Hadia Suleman</title>
+    <link rel="apple-touch-icon" href="https://img.icons8.com/emoji/96/heart-suit.png">
+    <link rel="icon" href="https://img.icons8.com/emoji/96/heart-suit.png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            color: #f1f1f1;
+            overflow-x: hidden;
+            background: radial-gradient(circle at top, #1a1a2e, #0f0f1a, #05050a);
+            min-height: 100vh;
+        }
+
+        .hidden { display: none; }
+/* 🌠 Shooting Stars CSS */
+.shooting-star {
+    position: fixed;
+    width: 80px;
+    height: 2px;
+    background: linear-gradient(90deg, white, transparent);
+    animation: shoot 1.5s linear forwards;
+    z-index: 1;
+    pointer-events: none;
+}
+
+@keyframes shoot {
+    0% { 
+        transform: translateX(0) translateY(0) rotate(35deg); 
+        opacity: 1; 
+    }
+    100% { 
+        transform: translateX(500px) translateY(500px); 
+        opacity: 0; 
+    }
+}
+        /* Fireworks Canvas */
+        #fwCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Lock Screen */
+        #lockScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        input[type="password"] {
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid #ff4d6d;
+            width: 80%;
+            max-width: 250px;
+            margin-bottom: 15px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            margin: 8px;
+            border: none;
+            border-radius: 12px;
+            background: #ff4d6d;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+        }
+
+        button:active { transform: scale(0.95); }
+
+        h1 { animation: glow 2.5s infinite alternate; margin-top: 40px; font-size: 24px; padding: 0 10px; }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 5px #ff4d6d; }
+            to { text-shadow: 0 0 20px #ff1a4d; }
+        }
+
+        .box {
+            margin: 15px auto;
+            padding: 15px;
+            font-size: 16px;
+            min-height: 60px;
+            max-width: 85%;
+            line-height: 1.6;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #countdown { font-weight: bold; font-size: 20px; color: #ff4d6d; }
+
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            color: #ff4d6d;
+            animation: floatUp 1.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-150px) scale(1.5); opacity: 0; }
+        }
+
+        .star {
+            position: fixed;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: blink 2s infinite alternate;
+            z-index: 0;
+        }
+
+        @keyframes blink { from { opacity: 0.2; } to { opacity: 0.8; } }
+
+        hr { border: 0; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 20px auto; width: 70%; }
+    </style>
+</head>
+<body>
+
+<canvas id="fwCanvas"></canvas>
+
+<div id="lockScreen">
+    <h2 style="margin-bottom: 20px;">Enter Password 🔒</h2>
+    <input type="password" id="pass" placeholder="Password here...">
+    <button onclick="unlock()">Unlock My Heart</button>
+</div>
+
+<div id="main" class="hidden">
+    <h1 id="mainTitle">For Hadia Suleman ❤️</h1>
+    
+    <div id="bdayMsg" class="hidden">
+        <h3 style="color: #e4e2db; text-shadow: 0 0 6px rgb(204, 184, 184);">🎉 HAPPY BIRTHDAY GAPPPOOO! 🎂</h3>
+    </div>
+
+    <h2>⏳ Countdown</h2>
+    <div class="box" id="countdown"></div>
+    <div class="box" id="nextYear" style="font-size: 13px; opacity: 0.7; min-height: auto;"></div>
+
+    <hr>
+
+    <h2>💌 Open When</h2>
+    <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+        <button onclick="openWhen('sad')">You're sad</button>
+        <button onclick="openWhen('miss')">You miss me</button>
+        <button onclick="openWhen('tired')">You're tired</button>
+    </div>
+    <div class="box" id="openBox">Click a button to read...</div>
+
+    <hr>
+
+    <h2>✨ Messages</h2>
+    <button onclick="showRandomMessage()">Show a Sweet Message</button>
+    <div class="box" id="typing">Click for a surprise...</div>
+    <div style="height: 50px;"></div>
+</div>
+
+<script>
+function unlock(){
+    let p = document.getElementById("pass").value;
+    if(p.toLowerCase() === "piyarigappo"){
+        document.getElementById("lockScreen").style.display = "none";
+        document.getElementById("main").classList.remove("hidden");
+        checkBirthday();
+        startCountdown();
+        startShootingStars();
+    } else {
+        alert("Ghalat password hai Gappoo!😁💕");
+    }
+}
+
+function checkBirthday() {
+    let today = new Date();
+    if (today.getMonth() === 3 && today.getDate() === 24) {
+        document.getElementById("bdayMsg").classList.remove("hidden");
+        initFireworks(); 
+    }
+}
+
+function startCountdown(){
+    setInterval(() => {
+        let now = new Date();
+        let target = new Date(now.getFullYear(), 3, 24);
+        if (now > target) { target = new Date(now.getFullYear() + 1, 3, 24); }
+        let diff = target - now;
+        let d = Math.floor(diff/(1000*60*60*24));
+        let h = Math.floor((diff/(1000*60*60))%24);
+        let m = Math.floor((diff/(1000*60))%60);
+        let s = Math.floor((diff/1000)%60);
+        document.getElementById("countdown").innerText = d+"d "+h+"h "+m+"m "+s+"s ❤️";
+        document.getElementById("nextYear").innerText = target.getFullYear() + " birthday coming 🌙";
+    }, 1000);
+}
+
+const openMessages = {
+    sad: [
+        "Gappooooo odas na ho, You deserve all the happiness in this world, khush khush raha kro mera bacha 🤗💕",
+        "Aaj ka din thora sa heavy hai, but mujhy yaqeen hai apni jaan pr YOU WILL MAKE IT 😘❤️",
+        "YOU ARE EVERYTHING TO ME, PLEASE BE HAPPY 😭❤️",
+        "I love you more than words can express 😭❤️",
+        "You’re doing your best, and that is enough 😭❤️",
+        "Let’s just sit in silence together if that helps 😭❤️",
+        "You are a gift and I hate that you’re feeling down 😭❤️",
+        "I’ll stay on the phone with you as long as you want 😭❤️",
+        "I believe in you even when you don't believe in yourself 😘❤️",
+        "Even when things are blurry my love for you is clear 😘❤️",
+        "You are much braver than you feel right now 🤗❤️",
+        "Just breathe—I’m holding your hand through the dark 😭❤️",
+        "You make my world better let me try to make yours a bit brighter 😘❤️",
+        "Is there anything I can do to make you smile for just a second? 🤗❤️",
+        "I’m sending you all my strength right now 😘❤️",
+        "You are so loved especially on the hard days 😘❤️",
+        "You don’t have to explain it 😭 I’m just here to hold you 🌹❤️",
+        "I’m in your corner always 🌷❤️",
+        "Whatever is making you sad, we’ll face it together 😭❤️",
+        "I’m so sorry you’re hurting; it hurts me too 😭❤️",
+        "Can I give you a hug until you feel a little better? 😭❤️",
+        "You are the strongest person I know even when you feel weak 💕💓",
+        "I wish I could take the weight off your shoulders 😭❤️",
+        "Your feelings are valid, and I’m listening 😭❤️",
+        "It’s okay not to be okay I’ve got you 😭❤️",
+        "I’m right here, and I’m not going anywhere 😭❤️",
+        "I may or may not know k tum q odas ho, but I WILL ALWAYS BE BY YOUR SIDE NO MATTER WHAT 😭❤️",
+        "Agr mujh sy odas ho Gappooo to call kr lo 😭 yaqeen jano sab teek ho jayega mera bacha 😘❤️",
+        "Gappooooo kuch cheezain hum control nahi kr sktay, on pr odas q hona? Be HAPPYYYYY MOI GURLLLL 😘😘"
+    ],
+    miss: [
+        "Me Missing Youuuuu too mera bacha 😭❤️",
+        "Jaan ho meriiiiii 💓❤️",
+        "Mei to hameshaaaaaa tumhara hon jab chaho mujhy pukar lo mei hazir apni jaan k liyaiiii 😘❤️",
+        "Mei door hon to kya howa khayal ban k aya hon, Gappooooo k pas hon hameshaaaaa 😘❤️",
+        "Your I miss you is the sweetest thing I’ve heard today 😘❤️",
+        "You have no idea how much I’m looking forward to seeing that beautiful face 😘❤️",
+        "I’ll be in your dreams tonight 😁❤️",
+        "If you look at the moon remember I’m looking at it too 👉👈❤️",
+        "Every mile between us is just a reminder of how much we’re worth 🌹❤️",
+        "You’re never alone I’m just a phone call or a thought away 😁❤️",
+        "Think of our next hug—it’s going to be the best one yet 😘❤️",
+        "I miss you just as much, maybe even a little more 😘❤️",
+        "Knowing you miss me makes me want to run to you even faster 😭❤️",
+        "I’m right here in your heart and you’re always in mine 🤗❤️",
+        "Close your eyes and feel my arms around you I’m there in spirit 😘❤️",
+        "I wish I could reach through this screen and hold your hand 😭❤️",
+        "Every song I hear reminds me of something about us 🎶😘",
+        "I caught myself smiling at my phone just because I was thinking of you 🌹❤️",
+        "I love you to the moon and back—literally 😘❤️",
+        "You are my home, and I’m coming home soon 😘❤️",
+        "I too can’t wait to tell you about my day in person 😁❤️",
+        "No distance can change how I feel about you 🤗❤️",
+        "I’m holding you tight in my thoughts 😘❤️",
+        "I’m sending you a thousand kisses through this message 😘😘😘😘😘😘",
+        "You are worth every mile between us 🌹❤️",
+        "I miss the way you laugh more than anything 😭❤️",
+        "I’ll be back in your arms before you know it 🤗❤️",
+        "You’re always with me no matter where I go 💕💓",
+        "I’m saving all my hugs for when I see you 🤗❤️",
+        "We’re under the same moon looking at the same stars daikhoooooo 😘❤️",
+        "I’m wearing the smile you gave me 😁❤️",
+        "My heart too feels empty without you nearby 😭❤️",
+        "You’re the last thing on my mind before I sleep 😘❤️",
+        "I’d fly to you right now if I could 😁❤️",
+        "I can feel your love from here 💕💓",
+        "I’m counting down the moments until we’re together 🌹💓",
+        "Every second apart is a second closer to seeing you 😘😍",
+        "Close your eyes I’m right there in your heart 😁❤️"
+    ],
+    tired: [
+        "Let me Hug Youuuuu 🤗❤️",
+        "Mera bacha itna thak gaya hai bsss aab aram kro choro sari sochain sary kaam bs aram kro bilkul easyyyyy ho jao Gappoooooooo 😘😘😘",
+        "Wake up refreshed you’ve got this 🌷❤️",
+        "I’m whispering I love you so I don’t wake you 💗💓",
+        "Take a deep breath and let the day go 😘❤️",
+        "I’m so lucky to have such a hardworking Gappooooo 😘❤️",
+        "Let your mind rest I’ll do the worrying for us 🌹❤️",
+        "Even when you’re tired you’re the most beautiful girl most beautifulllllllll 😘❤️",
+        "You’re my favorite sleepyhead 😁❤️",
+        "Recharge your soul I’ll be right here 😘❤️",
+        "I’ll keep the world quiet for you while you nap 😘❤️",
+        "You’ve earned a long, deep sleep and a BIG HUG 🤗❤️",
+        "I’m sending you a big warm, virtual HUG 🤗😘❤️",
+        "Go to sleep knowing you are deeply cherished 🤗❤️",
+        "You look so peaceful when you’re resting 😘❤️",
+        "I’ll be the first person you talk to when you wake up 🌹❤️",
+        "Sleep well and dream of happy things jaise k mei 😁❤️",
+        "You give so much to everyone let me give back to you 🌹❤️",
+        "I’m your safe place to land when you’re exhausted 😭❤️",
+        "Your only job right now is to rest soo jao mera bacha 😘❤️",
+        "Don’t worry about anything it can wait until tomorrow 💕💓",
+        "You deserve a break and all the peace in the world 😘❤️",
+        "I wish I could tuck you into bed right now 🌹❤️",
+        "Let me take care of things while you relax 😘❤️",
+        "You’ve been so hardworking I’m so proud of you 😭❤️",
+        "Put your phone down and close those beautiful eyes 😘❤️",
+        "Rest now, my love you’ve done enough today 😭❤️",
+        "Gappooooooo soo jaooo mera bacha bss ❤️ ye socho shona mery pas hai let me hug youuuuu and soo jao bilkul aram sy sukoon sy 😘❤️",
+        "Agr ye thakan wo physically tirednes hai to mujhy bula lo 👉👈 mei pair duba donga 😁❤️"
+    ]
+};
+
+const messages = [
+    "Tumhara meri zindagi m hona mujhy complete krta hai 😘❤️",
+    "I’m so lucky to have You in my life 😘❤️",
+    "You are pure magic, a magic that bought happiness to my life 😘❤️",
+    "I’m keeping you tucked safely in my thoughts all day long 😘❤️",
+    "Just thinking of you makes me smile 😁❤️",
+    "You’re my dream come true 🌹❤️",
+    "My heart is, and always will be, yours 😘❤️",
+    "You are my sunshine on a rainy day 🌦❤️",
+    "Loving you is as natural as breathing 🍃❤️",
+    "You’re the best thing that ever happened to me 😘😘❤️",
+    "My favorite place is inside your hug 😁❤️",
+    "You make my world glow 🌍❤️",
+    "Home is wherever you are 🏡❤️ ",
+    "You are my heart’s favorite person And will Always be 💕❤️",
+    "Life is better with you by my side 😘❤️",
+    "Every day is a gift because of you 🎁❤️",
+    "You are my favorite everymoment thought 😁❤️",
+    "I fell in love with your soul before You even said yes hehe 😁❤️",
+    "You are the melody to my heart's song 😘❤️",
+    "I cherish every moment we share ⚘️❤️",
+    "You’ve changed my life in the best possible way 🌸❤️",
+    "I could listen to you talk FOREVER 😘❤️",
+    "Your kindness is my favorite thing about you 🌹💕",
+    "There isn't a word sweet enough to describe you 😘❤️",
+    "You make the ordinary feel extraordinary 🌷💞",
+    "I love the person I am when I'm with you 😁😘",
+    "Your happiness is my favorite goal 😘❤️",
+    "I promise to always hold your hand through it all 😘💕",
+    "Thank you for being my safe haven 😭❤️",
+    "You are the peace I’ve been looking for 💕💓",
+    "I love the way you look at the world and Me 😘❤️",
+    "Your soul is the most beautiful thing I’ve ever known Gappooooo 😘❤️",
+    "You’re the cheese to my macaroni 😋❤️",
+    "Still crushing on you every single day 😁❤️",
+    "You’re my favorite notification 😘❤️",
+    "I’d pick you every single time 💕❤️",
+    "You have a permanent reservation in my heart Subscription khatam nahi honi 😁❤️",
+    "You’re the Apple to my pie 🍎😋",
+    "You’re stuck with me—no refunds 😁❤️",
+    "My heart does anayyyy wahhhhh dance when I see you 😂❤️",
+    "You’re the sprinkles on my cupcake 😋❤️",
+    "I love you more than words can say, but I'll try anyway 😁❤️",
+    "You're my favorite reason to stay awake 😘❤️",
+    "Everything is better when we're together 😘❤️",
+    "You’re simply un-bee-lievable 😁❤️",
+    "I will choose you, over and over, without a pause 😭❤️",
+    "My love for you grows deeper every second 😘❤️",
+    "You are my forever and always 😁❤️",
+    "I want to grow old and grumpy with you 👉👈❤️",
+    "Your love is the greatest treasure I own 😘❤️",
+    "I'm yours, today and for all my tomorrows 😘❤️",
+    "Every love story is beautiful, but ours is my favorite 😁❤️",
+    "You are the missing piece I didn’t know I needed, You complete me 😭😘❤️",
+    "I see my entire future in your eyes 😘❤️",
+    "To the world, you may be one person, but to me, you are the world 🌎❤️",
+    "I love you for all that you are and all that you will be 😘❤️",
+    "You are a masterpiece 😘❤️",
+    "Thank you for being you 😘❤️",
+    "You are worth everything 🌎❤️",
+    "I’m thinking of you right this second 😁❤️",
+    "Your smile is my favorite view 😘❤️",
+    "You are my favorite hello 😁😘",
+    "I believe in you more than anything 😘❤️",
+    "You make me so proud every day 💕💓",
+    "I’m always in your corner 😘❤️",
+    "You are the prettiest girl in the world 😘❤️",
+    "Sending you a digital hug right now 🤗❤️",
+    "You are so incredibly special 😘😘😘❤️",
+    "Don't forget how much you are loved 😘❤️",
+    "You are enough just as you are 😘❤️",
+    "You are the love of my life 😘❤️",
+    "My heart beats for you and only you 😘❤️",
+    "I promise to love you even when we’re 100 😁❤️",
+    "You are my greatest adventure 😁❤️",
+    "I AM INCREDIBLY PROUD TO HAVE YOU IN MY LIFE 😁❤️",
+    "You make the world feel a little softer 💗💓",
+    "You’re the best part of my day, every day 😘❤️",
+    "I love the way your mind works 🤗❤️",
+    "Just seeing your name pop up on my phone makes me happy 😁💕",
+    "You’re stuck with me, just so you know 😂❤️",
+    "You make me want to be a better man 😘❤️",
+    "You are more than enough ❤️❤️❤️",
+    "You’re the dream I never want to wake up from 😘❤️",
+    "You’re the first thing I want to talk to when I wake up 😘❤️",
+    "You are my home 🍃❤️",
+    "I’d choose you in every lifetime ❤️",
+    "Your voice is my favorite soundtrack 😘❤️",
+    "I didn't know I could feel this way until I met you 😭😘❤️",
+    "I quietly appreciate All your thinggggsss sari ki sari adatain 😘😘😘😘❤️"
+];
+
+let typeInterval;
+function typeWriter(text){
+    let i=0; let el=document.getElementById("typing"); el.innerHTML="";
+    clearInterval(typeInterval);
+    typeInterval = setInterval(()=>{
+        el.innerHTML += text[i]; i++;
+        if(i>=text.length) clearInterval(typeInterval);
+    },40);
+}
+
+function openWhen(type){
+    let arr = openMessages[type];
+    document.getElementById("openBox").innerText = arr[Math.floor(Math.random()*arr.length)];
+}
+
+function showRandomMessage(){
+    let t = messages[Math.floor(Math.random()*messages.length)];
+    typeWriter(t);
+}
+
+document.addEventListener("pointerdown",(e)=>{
+    let h=document.createElement("div");
+    h.className="heart"; h.innerHTML="❤";
+    h.style.left=e.clientX+"px"; h.style.top=e.clientY+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1500);
+});
+
+for(let i=0;i<60;i++){
+    let s=document.createElement("div");
+    s.className="star"; let size = (Math.random()*2+1);
+    s.style.width=size+"px"; s.style.height=size+"px";
+    s.style.top=Math.random()*100+"vh"; s.style.left=Math.random()*100+"vw";
+    document.body.appendChild(s);
+}
+
+function initFireworks() {
+    const canvas = document.getElementById('fwCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x; this.y = y; this.color = color;
+            this.velocity = { x: (Math.random() - 0.5) * 8, y: (Math.random() - 0.5) * 8 };
+            this.alpha = 1; this.friction = 0.95;
+        }
+        draw() {
+            ctx.globalAlpha = this.alpha;
+            ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = this.color; ctx.fill();
+        }
+        update() {
+            this.velocity.x *= this.friction; this.velocity.y *= this.friction;
+            this.x += this.velocity.x; this.y += this.velocity.y;
+            this.alpha -= 0.01;
+        }
+    }
+    function createFirework() {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * (canvas.height / 2);
+        const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        for (let i = 0; i < 40; i++) { particles.push(new Particle(x, y, color)); }
+    }
+    function animate() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+            if (p.alpha > 0) { p.update(); p.draw(); } 
+            else { particles.splice(i, 1); }
+        });
+        requestAnimationFrame(animate);
+    }
+    // This starts the fireworks
+    let fwTimer = setInterval(createFirework, 800);
+    
+    // THIS IS THE FIX:
+    // It waits 15 seconds, then stops the loop and removes the canvas
+    setTimeout(() => {
+        clearInterval(fwTimer); // Stops new fireworks from appearing
+        canvas.style.opacity = '0'; // Fades them out
+        setTimeout(() => canvas.remove(), 2000); // Deletes the fireworks layer
+    }, 8000); 
+    
+    animate();
+}
+function startShootingStars() {
+    setInterval(() => {
+        let s = document.createElement("div");
+        s.className = "shooting-star";
+        // Random starting position on the top-left side of the screen
+        s.style.top = Math.random() * window.innerHeight / 2 + "px";
+        s.style.left = Math.random() * window.innerWidth / 2 + "px";
+        document.body.appendChild(s);
+        
+        // Remove the element from the code once the animation is done
+        setTimeout(() => s.remove(), 1500);
+    }, 4000); 
+}
+</script>
+</body>
+</html>
